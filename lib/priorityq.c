@@ -1,18 +1,10 @@
+#ifndef PRIORITYQ_C
+#define PRIORITYQ_C
+
+#include "priorityq.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define PQUEUE_GREATER 1
-#define PQUEUE_EQUAL 0
-#define PQUEUE_LESS -1
-
-typedef struct pqueue_t {
-  int (*comparator)(void *, void *);
-  int min_capacity;
-  int capacity;
-  void **heap_array;
-  int heap_size;
-} pqueue;
 
 pqueue *pqueue_init(int capacity, int min_capacity,
                     int (*comparator)(void *, void *)) {
@@ -119,32 +111,4 @@ void *pqueue_dequeue(pqueue *pque) {
   return element;
 }
 
-int comparator(void *a, void *b) {
-  int value_1, value_2;
-
-  value_1 = *((int *)a);
-  value_2 = *((int *)b);
-
-  if (value_1 > value_2) {
-    return PQUEUE_GREATER;
-  };
-
-  if (value_1 < value_2) {
-    return PQUEUE_LESS;
-  };
-
-  return PQUEUE_EQUAL;
-}
-
-int main() {
-  pqueue *pq = pqueue_init(100, 2, &comparator);
-
-  int a = 1;
-  int b = 2;
-  int c = 3;
-  int d = 0;
-
-  // for (int i = 0; i < pq->heap_size; i++) {
-  //   printf("%d\n", *(int *)pq->heap_array[i]);
-  // }
-}
+#endif
