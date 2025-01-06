@@ -53,7 +53,14 @@ static void swap(pqueue *pque, const int key_1, const int key_2) {
 
 static void max_capacity(pqueue *pque) {
   if (pque->heap_size >= pque->capacity) {
-    fprintf(stderr, "FATAL: Enqueued item out of bounds.\n");
+    fprintf(stderr, "FATAL: Enqueued item out of upper bounds.\n");
+    exit(1);
+  }
+}
+
+static void min_capacity(pqueue *pque) {
+  if (pque->heap_size < 0) {
+    fprintf(stderr, "FATAL: Enqueued item out of lower bounds.\n");
     exit(1);
   }
 }
@@ -78,7 +85,7 @@ static void heapify_down(pqueue *pque, int key) {
   }
 };
 
-void enqueue(pqueue *pque, void *element) {
+void pqueue_enqueue(pqueue *pque, void *element) {
 
   max_capacity(pque);
   pque->heap_array[pque->heap_size] = element;
@@ -94,6 +101,22 @@ void enqueue(pqueue *pque, void *element) {
     i = parent;
     parent = (i - 1) / 2;
   }
+}
+
+void *pqueue_peek(pqueue *pque) { return pque->heap_array[0]; }
+
+void *pqueue_dequeue(pqueue *pque) {
+  void *element = pque->heap_array[0];
+  swap(pque, 0, pque->heap_size - 1);
+
+  pque->heap_array[pque->heap_size - 1] = NULL;
+  pque->heap_size -= 1;
+
+  min_capacity(pque);
+
+  heapify_down(pque, 0);
+
+  return element;
 }
 
 int comparator(void *a, void *b) {
@@ -121,6 +144,7 @@ int main() {
   int c = 3;
   int d = 0;
 
-  for (int i = 0; i < pq->heap_size; i++)
-    printf("%d\n", *(int *)pq->heap_array[i]);
+  // for (int i = 0; i < pq->heap_size; i++) {
+  //   printf("%d\n", *(int *)pq->heap_array[i]);
+  // }
 }
