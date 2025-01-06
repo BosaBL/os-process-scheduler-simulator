@@ -22,4 +22,6 @@ void *pqueue_peek(pqueue *pque);
 
 void *pqueue_dequeue(pqueue *pque);
 
+void heapify_down(pqueue *pque, int key);
+
 #endif

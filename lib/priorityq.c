@@ -4,7 +4,6 @@
 #include "priorityq.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 pqueue *pqueue_init(int capacity, int min_capacity,
                     int (*comparator)(void *, void *)) {
@@ -57,7 +56,7 @@ static void min_capacity(pqueue *pque) {
   }
 }
 
-static void heapify_down(pqueue *pque, int key) {
+void heapify_down(pqueue *pque, int key) {
   int largest = key;
   int left = 2 * key + 1;
   int right = 2 * key + 2;
