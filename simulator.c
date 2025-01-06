@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 typedef struct Process {
   int pid;
@@ -51,22 +52,28 @@ Algorithm_eval *priority_scheduling(Process proc[], int proc_qty) {
 
   pqueue *pq = pqueue_init(proc_qty, 0, &priority_compare);
   int timer = 0;
-  int execution_time;
+  Process *executing = NULL;
 
   for (int i = 0; i < proc_qty; i++) {
     pqueue_enqueue(pq, &proc[i]);
   }
 
   while (pq->heap_size > 0) {
-    execution_time = 0;
 
-    if (((Process *)pqueue_peek(pq))->arrivalTime > timer) {
+    if (((Process *)pqueue_peek(pq))->arrivalTime < timer &&
+        executing == NULL) {
+      executing = (Process *)pqueue_dequeue(pq);
+      executing->responseTime = timer;
+    }
+
+    if (executing == NULL) {
+      algorithm_data->idleTime++;
       timer++;
       continue;
     }
 
+    algorithm_data->busyTime++;
     timer++;
-    execution_time++;
   }
 
   return algorithm_data;
