@@ -82,7 +82,7 @@ void pqueue_enqueue(pqueue *pque, void *element) {
   pque->heap_array[pque->heap_size] = element;
   pque->heap_size += 1;
 
-  int parent = pque->heap_size / 2;
+  int parent = (pque->heap_size - 1) / 2;
   int i = pque->heap_size - 1;
 
   while (i > 0 &&

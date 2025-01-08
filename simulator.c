@@ -58,43 +58,44 @@ Algorithm_eval *priority_scheduling(Process proc[], int proc_qty) {
     pqueue_enqueue(pq, &proc[i]);
   }
 
-  while (pq->heap_size > 0) {
-
-    if (((Process *)pqueue_peek(pq))->arrivalTime < timer &&
-        executing == NULL) {
-      executing = (Process *)pqueue_dequeue(pq);
-      executing->responseTime = timer;
-    }
-
-    if (executing == NULL) {
-      algorithm_data->idleTime++;
-      timer++;
-      continue;
-    }
-
-    algorithm_data->busyTime++;
-    timer++;
+  for (int i = 0; i < proc_qty; i++) {
+    Process *p = pqueue_dequeue(pq);
+    printf("(%d,%d)\n", p->arrivalTime, p->priority);
   }
 
-  return algorithm_data;
+  // while (pq->heap_size > 0) {
+  //
+  //   if (((Process *)pqueue_peek(pq))->arrivalTime < timer &&
+  //       executing == NULL) {
+  //     executing = (Process *)pqueue_dequeue(pq);
+  //     executing->responseTime = timer;
+  //   }
+  //
+  //   if (executing == NULL) {
+  //     algorithm_data->idleTime++;
+  //     timer++;
+  //     continue;
+  //   }
+  //
+  //   algorithm_data->busyTime++;
+  //   timer++;
+  // }
+  //
+  // return algorithm_data;
 };
 
 int main() {
 
-  Process p3 = {3, 3, 2, 10, 1};
+  int MAX_P = 100;
 
-  Process p1 = {1, 10, 2, -1, 1};
+  Process a[MAX_P];
 
-  Process p2 = {2, 90, 2, 1, 1};
+  for (int i = 0; i < MAX_P; i++) {
+    int rand1 = random() % 5;
+    int rand2 = random() % 100;
 
-  Process p4 = {4, 1, 2, 10, 1};
+    a[i] = (Process){i, rand2, rand1, 10, 1};
+  }
 
-  Process p5 = {5, 4, 2, 10, 1};
-
-  Process p6 = {6, 10000, 2, 10, 1};
-  Process a[6] = {
-      p3, p1, p4, p6, p2, p5,
-  };
-
-  priority_scheduling(a, 6);
+  priority_scheduling(a, MAX_P);
 }
