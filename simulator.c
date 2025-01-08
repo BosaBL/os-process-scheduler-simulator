@@ -48,40 +48,29 @@ int priority_compare(void *a, void *b) {
 }
 
 Algorithm_eval *priority_scheduling(Process proc[], int proc_qty) {
+  int time = 0;
+
   Algorithm_eval *algorithm_data = NULL;
+  Process *executing = NULL;
 
   pqueue *pq = pqueue_init(proc_qty, 0, &priority_compare);
-  int timer = 0;
-  Process *executing = NULL;
 
   for (int i = 0; i < proc_qty; i++) {
     pqueue_enqueue(pq, &proc[i]);
   }
 
-  for (int i = 0; i < proc_qty; i++) {
-    Process *p = pqueue_dequeue(pq);
-    printf("(%d,%d)\n", p->arrivalTime, p->priority);
+  while (pq->heap_size > 0) {
+    if (executing == NULL &&
+        ((Process *)pqueue_peek(pq))->arrivalTime <= time) {
+      executing = pqueue_dequeue(pq);
+      executing->responseTime =
+          executing->responseTime < 0 ? time : executing->responseTime;
+    }
+
+    time++;
   }
 
-  // while (pq->heap_size > 0) {
-  //
-  //   if (((Process *)pqueue_peek(pq))->arrivalTime < timer &&
-  //       executing == NULL) {
-  //     executing = (Process *)pqueue_dequeue(pq);
-  //     executing->responseTime = timer;
-  //   }
-  //
-  //   if (executing == NULL) {
-  //     algorithm_data->idleTime++;
-  //     timer++;
-  //     continue;
-  //   }
-  //
-  //   algorithm_data->busyTime++;
-  //   timer++;
-  // }
-  //
-  // return algorithm_data;
+  return algorithm_data;
 };
 
 int main() {
