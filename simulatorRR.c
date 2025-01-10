@@ -146,9 +146,9 @@ int main() {
 
     a[0] = (Process){.pid = 1, .arrivalTime = 0, .CPUBurst = 5};
     a[1] = (Process){.pid = 2, .arrivalTime = 0, .CPUBurst = 4};
-    a[2] = (Process){.pid = 3, .arrivalTime = 0, .CPUBurst = 3};
-    a[3] = (Process){.pid = 4, .arrivalTime = 0, .CPUBurst = 6};
-    a[4] = (Process){.pid = 5, .arrivalTime = 0, .CPUBurst = 2};
+    a[2] = (Process){.pid = 3, .arrivalTime = 5, .CPUBurst = 3};
+    a[3] = (Process){.pid = 4, .arrivalTime = 5, .CPUBurst = 6};
+    a[4] = (Process){.pid = 5, .arrivalTime = 5, .CPUBurst = 2};
 
     round_robin(a, MAX_P, quantum);
     return 0;
