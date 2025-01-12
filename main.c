@@ -27,7 +27,7 @@ int main() {
 
   initProcess(&a[4], 4, 102, 1, 3);
 
-  algorithm_eval *sim = priority_scheduling(a, 5);
+  algorithm_eval *sim = priority_scheduling(a, 5, 0);
 
   printf("ALGORITHM METRIC: PRIORITY SCHEDULING\n");
   printf("%s (startTime:%d,totalTime:%d,ideTime:%d,avgResponseTime:%f,"

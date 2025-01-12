@@ -16,6 +16,7 @@ typedef struct Process {
 
 void initProcess(Process *p, int pid, int priority, int CPUBurst,
                  int arrivalTime);
+
 char *startDetails(Process *p);
 
 char *endDetails(Process *p);

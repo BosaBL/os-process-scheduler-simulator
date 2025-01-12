@@ -71,10 +71,13 @@ static int priority_compare(void *a, void *b) {
 }
 
 /*
- * Simulates the scheduling and execution of processes using non-preemptive
- * priority scheduling.
+ * Simulates the scheduling and execution of processes using non-preemptive or
+ * preemptive priority scheduling.
+ *
+ * @param preemptive 0 for non-preemptive, 1 for preemptive.
  */
-algorithm_eval *priority_scheduling(Process proc[], int proc_qty) {
+algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
+                                    int preemptive) {
   Process *executing = NULL;
 
   int time = 0;
@@ -92,40 +95,49 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty) {
   // Simulate while there are processes ready and a process is not already being
   // executed.
   while (pq->heap_size > 0 || rq->heap_size > 0 || executing != NULL) {
-
     if (pq->heap_size > 0 &&
         ((Process *)pqueue_peek(pq))->arrivalTime <= time) {
       pqueue_enqueue(rq, pqueue_dequeue(pq));
     }
+
     // Check if we can execute the smallest arrival time process.
     if (executing == NULL) {
+
       if (rq->heap_size > 0) {
         executing = pqueue_dequeue(rq);
-        executing->startTime =
-            executing->startTime < 0 ? time : executing->startTime;
 
-        executing->responseTime = executing->responseTime < 0
-                                      ? time - executing->arrivalTime
-                                      : executing->responseTime;
-        // Print details.
         char *details = startDetails(executing);
-        // printf("EXECUTING %s\n", details);
+        printf("EXECUTING %s", details);
         free(details);
-        // fflush(stdout);
+        fflush(stdout);
       }
-    } else {
-      algorithm_data->busyTime++;
+    } else if (rq->heap_size > 0 &&
+               ((Process *)pqueue_peek(rq))->priority < executing->priority &&
+               preemptive == 1) {
+
+      pqueue_enqueue(rq, executing);
+      executing = pqueue_dequeue(rq);
+
+      char *details = startDetails(executing);
+      printf("EXECUTING %s", details);
+      free(details);
+      fflush(stdout);
     }
 
-    if (executing == NULL) {
-      algorithm_data->idleTime++;
-    }
+    if (executing != NULL) {
+      executing->startTime =
+          executing->startTime < 0 ? time : executing->startTime;
 
-    time++;
+      executing->responseTime = executing->responseTime < 0
+                                    ? time - executing->arrivalTime
+                                    : executing->responseTime;
+    };
 
-    // Check if current executing process has finished its execution.
+    time += 1;
+
     if (executing != NULL) {
       executing->internalExecutionTime++;
+
       if (executing->CPUBurst - executing->internalExecutionTime <= 0) {
         executing->completionTime = time;
         executing->turnAroundTime = time - executing->arrivalTime;
@@ -134,20 +146,17 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty) {
 
         // Print details.
         char *details = endDetails(executing);
-        // printf("\33[2K\r"); // Delete last line.
-        // printf("\n");
+        printf("\33[2K\r"); // Delete last line.
         printf("EXECUTED  %s\n", details);
         free(details);
         executing = NULL;
-      } else if (rq->heap_size > 0 &&
-                 ((Process *)pqueue_peek(rq))->priority < executing->priority) {
-        pqueue_enqueue(rq, executing);
-        executing = NULL;
       }
+    } else {
+      algorithm_data->idleTime++;
     }
 
     // Sleep for visualization purpososes.
-    usleep(1000 * 1000);
+    usleep(1000 * 1500);
   }
 
   // Calculate averages and metrics.

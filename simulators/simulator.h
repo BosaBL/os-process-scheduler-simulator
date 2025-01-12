@@ -13,7 +13,8 @@ typedef struct algorithm_eval_t {
   char *alg;
 } algorithm_eval;
 
-algorithm_eval *priority_scheduling(Process proc[], int proc_qty);
+algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
+                                    int preemptive);
 
 algorithm_eval *round_robin_scheduling(Process proc[], int proc_qty,
                                        int quantum);
