@@ -110,4 +110,10 @@ void *pqueue_dequeue(pqueue *pque) {
   return element;
 }
 
+void deallocate_pqueue(pqueue *pque) {
+  free(pque->heap_array);
+  free(pque);
+  pque = NULL;
+}
+
 #endif

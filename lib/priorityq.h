@@ -24,4 +24,6 @@ void *pqueue_dequeue(pqueue *pque);
 
 void heapify_down(pqueue *pque, int key);
 
+void deallocate_pqueue(pqueue *pque);
+
 #endif
