@@ -1,6 +1,6 @@
+#include "./lib/utils.h"
 #include "lib/fort.h"
 #include "lib/process.h"
-#include "lib/utils.h"
 #include "simulators/simulators.h"
 #include <argp.h>
 #include <stdio.h>
@@ -26,10 +26,12 @@ static struct argp_option options[] = {
     {"round_robin", 'r', 0, 0, "Simulate round robin scheduling."},
     {"input_file", 'f', "FILE", 0, "Input file with processes to simulate."},
     {"verbose", 'v', 0, 0, "Print process execution verbosely."},
+    {"quantum", 'q', "INTEGER", OPTION_ARG_OPTIONAL,
+     "Quantum time for round robin schediling."},
     {0}};
 
 struct arguments {
-  int np_scheduling, pp_scheduling, round_robin, process_qty;
+  int np_scheduling, pp_scheduling, round_robin, process_qty, quantum;
   char *input_file;
 };
 
@@ -44,6 +46,11 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
     break;
   case 'r':
     arguments->round_robin = 1;
+    break;
+  case 'q':
+    if (arg != NULL) {
+      arguments->quantum = atoi(arg);
+    }
     break;
   case 'f':
     arguments->input_file = arg;
@@ -69,6 +76,7 @@ int main(int argc, char **argv) {
   arguments.np_scheduling = 0;
   arguments.pp_scheduling = 0;
   arguments.round_robin = 0;
+  arguments.quantum = 0;
   arguments.process_qty = 0;
   arguments.input_file = NULL;
 
@@ -77,6 +85,11 @@ int main(int argc, char **argv) {
   if (arguments.process_qty <= 0 && arguments.input_file == NULL) {
     fprintf(stderr, "ERROR: Random process generation (-z) XOR input file "
                     "(-f FILE) needs to be defined.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  if (arguments.round_robin && arguments.quantum < 1) {
+    fprintf(stderr, "ERROR: Quantum (-q) must be an integer greater than 0.");
     exit(EXIT_FAILURE);
   }
 
@@ -177,6 +190,15 @@ int main(int argc, char **argv) {
   if (arguments.round_robin) {
     memcpy(rr_array, proc_array, sizeof(Process) * *(proc_qty));
 
+    rr_data = round_robin_scheduling(rr_array, *(proc_qty), arguments.quantum);
+
+    rr_data->alg = "RR";
+    ft_printf_ln(table, "%s|%d|%d|%d|%f|%f|%f", rr_data->alg, *proc_qty,
+                 rr_data->totalTime, rr_data->idleTime,
+                 rr_data->avgResponseTime, rr_data->avgTurnAroundTime,
+                 rr_data->avgWaitingTime);
+
+    algorithm_data_array[algorithm_qty] = rr_data;
     process_data_array[algorithm_qty] = rr_array;
     algorithm_qty++;
   }
