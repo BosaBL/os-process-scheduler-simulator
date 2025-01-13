@@ -1,0 +1,86 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-o",
+      "main.o",
+      "main.c"
+    ],
+    "directory": "/home/chris/projects/process-scheduler-simulator",
+    "file": "/home/chris/projects/process-scheduler-simulator/main.c",
+    "output": "/home/chris/projects/process-scheduler-simulator/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-o",
+      "main.o",
+      "lib/priorityq.c"
+    ],
+    "directory": "/home/chris/projects/process-scheduler-simulator",
+    "file": "/home/chris/projects/process-scheduler-simulator/lib/priorityq.c",
+    "output": "/home/chris/projects/process-scheduler-simulator/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-o",
+      "main.o",
+      "lib/process.c"
+    ],
+    "directory": "/home/chris/projects/process-scheduler-simulator",
+    "file": "/home/chris/projects/process-scheduler-simulator/lib/process.c",
+    "output": "/home/chris/projects/process-scheduler-simulator/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-o",
+      "main.o",
+      "lib/algorithm_eval.c"
+    ],
+    "directory": "/home/chris/projects/process-scheduler-simulator",
+    "file": "/home/chris/projects/process-scheduler-simulator/lib/algorithm_eval.c",
+    "output": "/home/chris/projects/process-scheduler-simulator/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-o",
+      "main.o",
+      "lib/utils.c"
+    ],
+    "directory": "/home/chris/projects/process-scheduler-simulator",
+    "file": "/home/chris/projects/process-scheduler-simulator/lib/utils.c",
+    "output": "/home/chris/projects/process-scheduler-simulator/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-o",
+      "main.o",
+      "lib/fort.c"
+    ],
+    "directory": "/home/chris/projects/process-scheduler-simulator",
+    "file": "/home/chris/projects/process-scheduler-simulator/lib/fort.c",
+    "output": "/home/chris/projects/process-scheduler-simulator/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-o",
+      "main.o",
+      "simulators/prioritySimulator.c"
+    ],
+    "directory": "/home/chris/projects/process-scheduler-simulator",
+    "file": "/home/chris/projects/process-scheduler-simulator/simulators/prioritySimulator.c",
+    "output": "/home/chris/projects/process-scheduler-simulator/main.o"
+  }
+]

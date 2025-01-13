@@ -1,36 +1,18 @@
-#include "./simulator.h"
 #include "../lib/priorityq.h"
 #include "../lib/process.h"
+#include "./simulators.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
 
-/*
- * Dinamically allocates algortihm_eval struct.
- */
-static algorithm_eval *initAlgortihmData(Process proc[]) {
-
-  algorithm_eval *algorithm_data = malloc(sizeof(algorithm_eval));
-
-  algorithm_data->alg = 0;
-  algorithm_data->startTime = 0;
-  algorithm_data->totalTime = 0;
-  algorithm_data->busyTime = 0;
-  algorithm_data->idleTime = 0;
-  algorithm_data->avgTurnAroundTime = 0;
-  algorithm_data->avgResponseTime = 0;
-  algorithm_data->avgWaitingTime = 0;
-  algorithm_data->processArray = &proc;
-
-  return algorithm_data;
-}
+extern int verbose;
 
 /*
- * Priority compare used for priority scheduler simulator.
- * Compares by arrival time, then if there are two proccesses that arrived a the
- * same time, it compares by priority.
+ * Comparator used for priority, first it compares elements by arrival
+ * time ascendantly and if two elements have the same arrival time it compares
+ * them descendantly . Lower priority number means higher importance.
  */
 static int arrival_priority_compare(void *a, void *b) {
   Process *p1 = a;
@@ -55,6 +37,10 @@ static int arrival_priority_compare(void *a, void *b) {
   return PQUEUE_EQUAL;
 }
 
+/*
+ * Comparator used for priority queue, compares elements by priority.
+ * Lower priority number means higher importance.
+ */
 static int priority_compare(void *a, void *b) {
   Process *p1 = a;
   Process *p2 = b;
@@ -74,6 +60,8 @@ static int priority_compare(void *a, void *b) {
  * Simulates the scheduling and execution of processes using non-preemptive or
  * preemptive priority scheduling.
  *
+ * Lower priority number means higher importance, thus being executed first.
+ *
  * @param preemptive 0 for non-preemptive, 1 for preemptive.
  */
 algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
@@ -82,7 +70,10 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
 
   int time = 0;
 
-  algorithm_eval *algorithm_data = initAlgortihmData(proc);
+  char *algname = preemptive == 0 ? "Non-Preemptive Priority Scheduling"
+                                  : "Preemptive Priority Scheduling";
+
+  algorithm_eval *algorithm_data = initAlgorithmData(proc, algname);
 
   // Prepare priority queue.
   pqueue *pq = pqueue_init(proc_qty, 0, &arrival_priority_compare);
@@ -105,11 +96,13 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
 
       if (rq->heap_size > 0) {
         executing = pqueue_dequeue(rq);
-
-        char *details = startDetails(executing);
-        printf("EXECUTING %s", details);
-        free(details);
-        fflush(stdout);
+        if (verbose == 1) {
+          char *details = startDetails(executing);
+          printf("\33[2K\r"); // Delete last line.
+          printf("EXECUTING %s", details);
+          free(details);
+          fflush(stdout);
+        }
       }
     } else if (rq->heap_size > 0 &&
                ((Process *)pqueue_peek(rq))->priority < executing->priority &&
@@ -118,10 +111,12 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
       pqueue_enqueue(rq, executing);
       executing = pqueue_dequeue(rq);
 
-      char *details = startDetails(executing);
-      printf("EXECUTING %s", details);
-      free(details);
-      fflush(stdout);
+      if (verbose == 1) {
+        char *details = startDetails(executing);
+        printf("EXECUTING %s", details);
+        free(details);
+        fflush(stdout);
+      }
     }
 
     if (executing != NULL) {
@@ -145,10 +140,14 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
             executing->turnAroundTime - executing->CPUBurst;
 
         // Print details.
-        char *details = endDetails(executing);
-        printf("\33[2K\r"); // Delete last line.
-        printf("EXECUTED  %s\n", details);
-        free(details);
+
+        if (verbose == 1) {
+          char *details = endDetails(executing);
+          printf("\33[2K\r"); // Delete last line.
+          printf("EXECUTED  %s\n", details);
+          free(details);
+        }
+
         executing = NULL;
       }
     } else {
@@ -156,11 +155,10 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
     }
 
     // Sleep for visualization purpososes.
-    usleep(1000 * 1500);
+    // usleep(1000 * 1500);
   }
 
   // Calculate averages and metrics.
-  algorithm_data->alg = 0;
   algorithm_data->startTime = 0;
   algorithm_data->totalTime = time;
   algorithm_data->avgResponseTime = avgResponseTime(proc, proc_qty);

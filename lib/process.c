@@ -20,6 +20,30 @@ void initProcess(Process *p, int pid, int priority, int CPUBurst,
   p->completionTime = 0;
   p->internalExecutionTime = 0;
 }
+
+/*
+ * Initializes a process with the required starting data.
+ *
+ * @param priority will only be used on priority based simulations.
+ */
+void initRandomProcess(Process *p, int pid, minMaxRange priority,
+                       minMaxRange CPUBurst, minMaxRange arrivalTime) {
+
+  p->pid = pid;
+  p->priority = random() % (priority.max - priority.min + 1) + priority.min;
+  p->CPUBurst = random() % (CPUBurst.max - CPUBurst.min + 1) + CPUBurst.min;
+  p->arrivalTime =
+      random() % (arrivalTime.max - arrivalTime.min + 1) + arrivalTime.min;
+  p->responseTime = -1;
+  p->turnAroundTime = 0;
+  p->waitingTime = 0;
+  p->startTime = -1;
+  p->completionTime = 0;
+  p->internalExecutionTime = 0;
+}
+
+// Process[] * initProcessesFromFile() {}
+//
 /*
  * Dynamically allocates a string that contains all the starting details of the
  * process.

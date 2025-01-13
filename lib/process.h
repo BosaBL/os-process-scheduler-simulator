@@ -14,8 +14,16 @@ typedef struct Process {
   int internalExecutionTime;
 } Process;
 
+typedef struct minMaxRange {
+  int min;
+  int max;
+} minMaxRange;
+
 void initProcess(Process *p, int pid, int priority, int CPUBurst,
                  int arrivalTime);
+
+void initRandomProcess(Process *p, int pid, minMaxRange priority,
+                       minMaxRange CPUBurst, minMaxRange arrivalTime);
 
 char *startDetails(Process *p);
 

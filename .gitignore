@@ -11,6 +11,7 @@
 *.ko
 *.obj
 *.elf
+*.cache
 
 # Linker output
 *.ilk
