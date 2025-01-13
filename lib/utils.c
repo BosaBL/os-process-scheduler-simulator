@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,24 +17,41 @@ void parseString(char *str, char *parsedStr) {
   int f_idx = 0;
 
   int length = strlen(str);
+  int counter = 0;
 
   for (int i = 0; i < length; i++) {
     if (str[i] == format[f_idx]) {
       f_idx++;
     }
+    if (str[i] == ',')
+      counter++;
   }
 
-  if (f_idx != strlen(format)) {
+  if (f_idx != strlen(format) || counter > 3) {
     fprintf(stderr, "ERROR: Sintax error on input file, format should be "
-                    "P<int>(<int>,<int>,<int>,<int>).\n");
+                    "P<int>(<int>,<int>,<int>,<int>)\\n.\n");
     exit(1);
   }
 
-  const char *open_brace = strchr(str, '(');
-  const char *close_brace = strrchr(str, ')');
+  char *open_brace = strchr(str, '(');
+  char *close_brace = strrchr(str, ')');
   int content_len = close_brace - open_brace - 1;
 
-  strncpy(parsedStr, open_brace + 1, content_len);
+  char *str_ptr = ++open_brace;
+  char last = ',';
+
+  for (int i = 0; i < content_len; i++, str_ptr++) {
+    if ((*str_ptr == ',' && last == *str_ptr) ||
+        (!isdigit(*str_ptr) && *str_ptr != ',')) {
+      fprintf(stderr, "ERROR: Sintax error on input file, format should be "
+                      "P<int>(<int>,<int>,<int>,<int>)\\n.\n");
+      exit(1);
+    }
+
+    last = *str_ptr;
+  };
+
+  strncpy(parsedStr, open_brace + 1, content_len - 1);
   parsedStr[content_len] = '\0';
 };
 

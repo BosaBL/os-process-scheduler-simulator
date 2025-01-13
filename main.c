@@ -65,7 +65,8 @@ static struct argp argp = {options, parse_opt, 0, doc};
 int main(int argc, char **argv) {
 
   char parse[256];
-  parseString("P1(23,2333333333333333333333333333,23,23)", parse);
+  parseString("P1(23,3,3,3)", parse);
+  char *token = strtok(parse, ",");
 
   // clearScreen();
   // struct arguments arguments;
