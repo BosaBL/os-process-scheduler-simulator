@@ -98,7 +98,8 @@ int main(int argc, char **argv) {
 
   // Intializing data related to the quantity of algorithms to simulate.
   int algorithm_qty = 0;
-  algorithm_eval algorithm_data_array[3] = {};
+  Process *process_data_array[3] = {};
+  algorithm_eval *algorithm_data_array[3] = {};
 
   srandom(time(NULL));
 
@@ -144,41 +145,123 @@ int main(int argc, char **argv) {
   ft_set_cell_prop(table, 0, FT_ANY_COLUMN, FT_CPROP_ROW_TYPE, FT_ROW_HEADER);
   ft_write_ln(table, "Algorithm", "ProccesQTY", "totalTime", "IdleTime",
               "avgResponseTime", "avgTurnAroundTime", "avgWaitingTime");
+  Process np_array[*proc_qty] = {};
+  Process pp_array[*proc_qty] = {};
+  Process rr_array[*proc_qty] = {};
 
   if (arguments.np_scheduling) {
-    Process np_array[*proc_qty] = {};
     memcpy(np_array, proc_array, sizeof(Process) * *(proc_qty));
 
     np_priority_data = priority_scheduling(np_array, *(proc_qty), 0);
 
+    np_priority_data->alg = "NP";
     ft_printf_ln(table, "%s|%d|%d|%d|%f|%f|%f", np_priority_data->alg,
                  *proc_qty, np_priority_data->totalTime,
                  np_priority_data->idleTime, np_priority_data->avgResponseTime,
                  np_priority_data->avgTurnAroundTime,
                  np_priority_data->avgWaitingTime);
 
+    algorithm_data_array[algorithm_qty] = np_priority_data;
+    process_data_array[algorithm_qty] = np_array;
     algorithm_qty++;
   }
 
   if (arguments.pp_scheduling) {
-    Process pp_array[*proc_qty] = {};
     memcpy(pp_array, proc_array, sizeof(Process) * *(proc_qty));
 
     pp_priority_data = priority_scheduling(pp_array, *(proc_qty), 1);
 
+    pp_priority_data->alg = "PP";
     ft_printf_ln(table, "%s|%d|%d|%d|%f|%f|%f", pp_priority_data->alg,
                  *proc_qty, pp_priority_data->totalTime,
                  pp_priority_data->idleTime, pp_priority_data->avgResponseTime,
                  pp_priority_data->avgTurnAroundTime,
                  pp_priority_data->avgWaitingTime);
+
+    algorithm_data_array[algorithm_qty] = pp_priority_data;
+    process_data_array[algorithm_qty] = pp_array;
+    algorithm_qty++;
   }
 
   if (arguments.round_robin) {
+    memcpy(rr_array, proc_array, sizeof(Process) * *(proc_qty));
+
+    process_data_array[algorithm_qty] = rr_array;
+    algorithm_qty++;
   }
 
-  printf("======= METRICS =======\n");
-  printf("%s\n", ft_to_string(table));
-  ft_destroy_table(table);
+  ft_table_t *table2 = ft_create_table();
+  ft_set_cell_prop(table2, 0, FT_ANY_COLUMN, FT_CPROP_ROW_TYPE, FT_ROW_HEADER);
+  ft_set_cell_prop(table2, 1, FT_ANY_COLUMN, FT_CPROP_ROW_TYPE, FT_ROW_HEADER);
 
+  printf("\n\n=======ALGORITHM METRICS=======\n");
+  printf("%s\n\n", ft_to_string(table));
+
+  printf("=======PROCESS METRICS=======\n");
+
+  switch (algorithm_qty) {
+
+    // Print table for 1 process.
+  case (1):
+
+    ft_write_ln(table2, "", algorithm_data_array[0]->alg,
+                algorithm_data_array[0]->alg, algorithm_data_array[0]->alg);
+    ft_write_ln(table2, "Process", "FinishTime", "TurnAroundTime",
+                "WaitingTime");
+    for (int i = 0; i < *(proc_qty); i++) {
+      Process p0 = process_data_array[0][i];
+
+      ft_printf_ln(table2, "%d|%d|%d|%d", p0.pid, p0.completionTime,
+                   p0.turnAroundTime, p0.waitingTime);
+    }
+
+    break;
+
+    // Print table for 2 processes.
+  case (2):
+    ft_write_ln(table2, "", algorithm_data_array[0]->alg,
+                algorithm_data_array[0]->alg, algorithm_data_array[0]->alg,
+                algorithm_data_array[1]->alg, algorithm_data_array[1]->alg,
+                algorithm_data_array[1]->alg);
+    ft_write_ln(table2, "Process", "FinishTime", "TurnAroundTime",
+                "WaitingTime", "FinishTime", "TurnAroundTime", "WaitingTime");
+
+    for (int i = 0; i < *(proc_qty); i++) {
+      Process p0 = process_data_array[0][i];
+      Process p1 = process_data_array[1][i];
+
+      ft_printf_ln(table2, "%d|%d|%d|%d|%d|%d|%d", p0.pid, p0.completionTime,
+                   p0.turnAroundTime, p0.waitingTime, p1.completionTime,
+                   p1.turnAroundTime, p1.waitingTime);
+    }
+    break;
+
+    // Print table for 3 processes.
+  case (3):
+    ft_write_ln(table2, "", algorithm_data_array[0]->alg,
+                algorithm_data_array[0]->alg, algorithm_data_array[0]->alg,
+                algorithm_data_array[1]->alg, algorithm_data_array[1]->alg,
+                algorithm_data_array[1]->alg, algorithm_data_array[2]->alg,
+                algorithm_data_array[2]->alg, algorithm_data_array[2]->alg);
+    ft_write_ln(table2, "Process", "FinishTime", "TurnAroundTime",
+                "WaitingTime", "FinishTime", "TurnAroundTime", "WaitingTime",
+                "FinishTime", "TurnAroundTime", "WaitingTime");
+
+    for (int i = 0; i < *(proc_qty); i++) {
+      Process p0 = process_data_array[0][i];
+      Process p1 = process_data_array[1][i];
+      Process p2 = process_data_array[2][i];
+
+      ft_printf_ln(table2, "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", p0.pid,
+                   p0.completionTime, p0.turnAroundTime, p0.waitingTime,
+                   p1.completionTime, p1.turnAroundTime, p1.waitingTime,
+                   p2.completionTime, p2.turnAroundTime, p2.waitingTime);
+    }
+    break;
+  }
+
+  printf("%s\n\n", ft_to_string(table2));
+
+  ft_destroy_table(table);
   exit(EXIT_SUCCESS);
 }

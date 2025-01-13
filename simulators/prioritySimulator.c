@@ -83,6 +83,10 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
 
   pqueue *rq = pqueue_init(proc_qty, 0, &priority_compare);
 
+  if (verbose == 1) {
+    printf("\n\nSIMULATING %s\n", algname);
+  }
+
   // Simulate while there are processes ready and a process is not already being
   // executed.
   while (pq->heap_size > 0 || rq->heap_size > 0 || executing != NULL) {
@@ -96,13 +100,13 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
 
       if (rq->heap_size > 0) {
         executing = pqueue_dequeue(rq);
-        if (verbose == 1) {
-          char *details = startDetails(executing);
-          printf("\33[2K\r"); // Delete last line.
-          printf("EXECUTING %s", details);
-          free(details);
-          fflush(stdout);
-        }
+        // if (verbose == 1) {
+        //   char *details = startDetails(executing);
+        //   printf("\33[2K\r"); // Delete last line.
+        //   printf("EXECUTING %s", details);
+        //   free(details);
+        //   fflush(stdout);
+        // }
       }
     } else if (rq->heap_size > 0 &&
                ((Process *)pqueue_peek(rq))->priority < executing->priority &&
@@ -111,12 +115,12 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
       pqueue_enqueue(rq, executing);
       executing = pqueue_dequeue(rq);
 
-      if (verbose == 1) {
-        char *details = startDetails(executing);
-        printf("EXECUTING %s", details);
-        free(details);
-        fflush(stdout);
-      }
+      // if (verbose == 1) {
+      //   char *details = startDetails(executing);
+      //   printf("EXECUTING %s", details);
+      //   free(details);
+      //   fflush(stdout);
+      // }
     }
 
     if (executing != NULL) {
@@ -143,7 +147,6 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
 
         if (verbose == 1) {
           char *details = endDetails(executing);
-          printf("\33[2K\r"); // Delete last line.
           printf("EXECUTED  %s\n", details);
           free(details);
         }
