@@ -7,8 +7,41 @@
  */
 void clearScreen() { system("clear"); }
 
-char *parseString(char *str);
+/*
+ * Parses and validates a string in the form of P<int>(<int>,<int>,<int>,<int>).
+ * if the string is valid, the parsed information will be stored into parsedStr
+ */
+void parseString(char *str, char *parsedStr) {
+  char *format = "P(,,,)";
+  int f_idx = 0;
 
+  int length = strlen(str);
+
+  for (int i = 0; i < length; i++) {
+    if (str[i] == format[f_idx]) {
+      printf("found: %c\n", format[f_idx]);
+      f_idx++;
+    }
+  }
+
+  if (f_idx != strlen(format)) {
+    fprintf(stderr, "ERROR: Sintax error on input file, format should be "
+                    "P<int>(<int>,<int>,<int>,<int>).\n");
+    exit(1);
+  }
+
+  const char *open_brace = strchr(str, '(');
+  const char *close_brace = strrchr(str, ')');
+  int content_len = close_brace - open_brace - 1;
+
+  strncpy(parsedStr, open_brace + 1, content_len);
+  parsedStr[content_len] = '\0';
+};
+
+/*
+ * Counts the ammount of "real" new lines that a file has.
+ * "real" new lines are define as a single consecutive line jump chararcter.
+ */
 int countFileLines(char *fileName) {
   int count = 0;
   int last = '\n';
@@ -31,6 +64,9 @@ int countFileLines(char *fileName) {
   return count;
 };
 
+/*
+ * Reverses a character array in-place.
+ */
 void reverse(char s[]) {
   int i, j;
   char c;
@@ -42,6 +78,10 @@ void reverse(char s[]) {
   }
 }
 
+/*
+ * Transforms an integer to a character array.
+ *
+ */
 char *itoa(int n) {
   int i, sign;
   char *s;
