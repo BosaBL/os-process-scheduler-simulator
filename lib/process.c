@@ -1,6 +1,8 @@
 #include "process.h"
+#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*
  * Initializes a process with the required starting data.
@@ -23,9 +25,7 @@ void initProcess(Process *p, int pid, int priority, int CPUBurst,
 
 /*
  * Initializes a process with the required starting data.
- *
- * @param priority will only be used on priority based simulations.
- */
+ * @param priority will only be used on priority based simulations. */
 void initRandomProcess(Process *p, int pid, minMaxRange priority,
                        minMaxRange CPUBurst, minMaxRange arrivalTime) {
 
@@ -42,8 +42,44 @@ void initRandomProcess(Process *p, int pid, minMaxRange priority,
   p->internalExecutionTime = 0;
 }
 
-// Process[] * initProcessesFromFile() {}
-//
+/*
+ * Initializes the passed array of processes with the data extracted from a
+ * file.
+ */
+void initProcessesFromFile(Process p[], char *file) {
+  FILE *fp;
+  char *line = NULL;
+  size_t len = 0;
+  ssize_t read;
+
+  fp = fopen(file, "r");
+  if (fp == NULL)
+    exit(EXIT_FAILURE);
+
+  int i = 0;
+  while ((read = getline(&line, &len, fp)) != -1) {
+    if (line[0] == '-' || read <= 1) {
+      continue;
+    }
+    char parse[256];
+
+    parseString(line, parse);
+    char *tok = strtok(parse, ",");
+
+    int priority = atoi(tok);
+    int CPUBurst = atoi(strtok(NULL, ","));
+    int arrivalTime = atoi(strtok(NULL, ","));
+
+    initProcess(&p[i], i, priority, CPUBurst, arrivalTime);
+    printf("%s\n", startDetails(&p[i]));
+    i++;
+  }
+
+  fclose(fp);
+  if (line)
+    free(line);
+};
+
 /*
  * Dynamically allocates a string that contains all the starting details of the
  * process.

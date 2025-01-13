@@ -25,6 +25,8 @@ void initProcess(Process *p, int pid, int priority, int CPUBurst,
 void initRandomProcess(Process *p, int pid, minMaxRange priority,
                        minMaxRange CPUBurst, minMaxRange arrivalTime);
 
+void initProcessesFromFile(Process p[], char *file);
+
 char *startDetails(Process *p);
 
 char *endDetails(Process *p);

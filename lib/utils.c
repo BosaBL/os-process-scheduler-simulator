@@ -13,7 +13,7 @@ void clearScreen() { system("clear"); }
  * if the string is valid, the parsed information will be stored into parsedStr
  */
 void parseString(char *str, char *parsedStr) {
-  char *format = "P(,,,)";
+  char *format = "P(,,)";
   int f_idx = 0;
 
   int length = strlen(str);
@@ -51,7 +51,7 @@ void parseString(char *str, char *parsedStr) {
     last = *str_ptr;
   };
 
-  strncpy(parsedStr, open_brace + 1, content_len - 1);
+  strncpy(parsedStr, open_brace, content_len);
   parsedStr[content_len] = '\0';
 };
 
@@ -60,23 +60,28 @@ void parseString(char *str, char *parsedStr) {
  * "real" new lines are define as a single consecutive line jump chararcter.
  */
 int countFileLines(char *fileName) {
+  FILE *fp;
+  char *line = NULL;
+  size_t len = 0;
+  ssize_t read;
   int count = 0;
-  int last = '\n';
-  FILE *fp = fopen(fileName, "r");
 
-  if (fp == NULL) {
-    fprintf(stderr, "FATAL: File (%s) does not exist.", fileName);
-    exit(1);
-  }
+  fp = fopen(fileName, "r");
+  if (fp == NULL)
+    exit(EXIT_FAILURE);
 
-  for (char c = getc(fp); c != EOF; c = getc(fp)) {
-    if (c == '\n' && last != '\n') {
-      ++count;
+  while ((read = getline(&line, &len, fp)) != -1) {
+
+    if (read <= 1 || line[0] == '-') {
+      continue;
     }
-    last = c;
+
+    count++;
   }
 
   fclose(fp);
+  if (line)
+    free(line);
 
   return count;
 };
