@@ -19,7 +19,6 @@ void parseString(char *str, char *parsedStr) {
 
   for (int i = 0; i < length; i++) {
     if (str[i] == format[f_idx]) {
-      printf("found: %c\n", format[f_idx]);
       f_idx++;
     }
   }
