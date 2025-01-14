@@ -221,7 +221,7 @@ int main(int argc, char **argv) {
   ft_set_cell_prop(table2, 0, FT_ANY_COLUMN, FT_CPROP_ROW_TYPE, FT_ROW_HEADER);
   ft_set_cell_prop(table2, 1, FT_ANY_COLUMN, FT_CPROP_ROW_TYPE, FT_ROW_HEADER);
 
-  printf("=======PROCESS METRICS=======\n");
+  printf("\n\n=======PROCESS METRICS=======\n");
 
   switch (algorithm_qty) {
 
@@ -287,8 +287,8 @@ int main(int argc, char **argv) {
     printf("%s\n\n", ft_to_string(table2));
   }
 
-  printf("\n\n=======ALGORITHM METRICS=======\n");
-  printf("%s\n\n", ft_to_string(table));
+  printf("=======ALGORITHM METRICS=======\n");
+  printf("%s\n", ft_to_string(table));
 
   ft_destroy_table(table);
   exit(EXIT_SUCCESS);

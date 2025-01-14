@@ -6,7 +6,7 @@
 /*
  * Clears terminal output in LINUX.
  */
-void clearScreen() { system("clear"); }
+void clearScreen() { system("reset"); }
 
 /*
  * Parses and validates a string in the form of P<int>(<int>,<int>,<int>,<int>).
