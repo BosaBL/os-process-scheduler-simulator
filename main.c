@@ -31,10 +31,12 @@ static struct argp_option options[] = {
      "Quantum time for round robin schediling."},
     {"context_cost", 'c', "INTEGER", OPTION_ARG_OPTIONAL,
      "Context switching time cost, 0 by default."},
+    {"process_stats", 's', 0, 0, "Show per process stats."},
     {0}};
 
 struct arguments {
-  int np_scheduling, pp_scheduling, round_robin, process_qty, quantum;
+  int np_scheduling, pp_scheduling, round_robin, process_qty, quantum,
+      process_stats;
   char *input_file;
 };
 
@@ -49,6 +51,9 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
     break;
   case 'r':
     arguments->round_robin = 1;
+    break;
+  case 's':
+    arguments->process_stats = 1;
     break;
   case 'q':
     if (arg != NULL) {
@@ -86,6 +91,7 @@ int main(int argc, char **argv) {
   arguments.round_robin = 0;
   arguments.quantum = 0;
   arguments.process_qty = 0;
+  arguments.process_stats = 0;
   arguments.input_file = NULL;
 
   argp_parse(&argp, argc, argv, ARGP_NO_ARGS, 0, &arguments);
@@ -215,9 +221,6 @@ int main(int argc, char **argv) {
   ft_set_cell_prop(table2, 0, FT_ANY_COLUMN, FT_CPROP_ROW_TYPE, FT_ROW_HEADER);
   ft_set_cell_prop(table2, 1, FT_ANY_COLUMN, FT_CPROP_ROW_TYPE, FT_ROW_HEADER);
 
-  printf("\n\n=======ALGORITHM METRICS=======\n");
-  printf("%s\n\n", ft_to_string(table));
-
   printf("=======PROCESS METRICS=======\n");
 
   switch (algorithm_qty) {
@@ -280,8 +283,12 @@ int main(int argc, char **argv) {
     }
     break;
   }
+  if (arguments.process_stats) {
+    printf("%s\n\n", ft_to_string(table2));
+  }
 
-  printf("%s\n\n", ft_to_string(table2));
+  printf("\n\n=======ALGORITHM METRICS=======\n");
+  printf("%s\n\n", ft_to_string(table));
 
   ft_destroy_table(table);
   exit(EXIT_SUCCESS);
