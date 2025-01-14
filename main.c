@@ -10,6 +10,7 @@
 
 const char *argp_program_version = "v1.0";
 int verbose = 0;
+int context_cost = 0;
 
 /* Program documentation. */
 static char doc[] =
@@ -28,6 +29,8 @@ static struct argp_option options[] = {
     {"verbose", 'v', 0, 0, "Print process execution verbosely."},
     {"quantum", 'q', "INTEGER", OPTION_ARG_OPTIONAL,
      "Quantum time for round robin schediling."},
+    {"context_cost", 'c', "INTEGER", OPTION_ARG_OPTIONAL,
+     "Context switching time cost, 0 by default."},
     {0}};
 
 struct arguments {
@@ -50,6 +53,11 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
   case 'q':
     if (arg != NULL) {
       arguments->quantum = atoi(arg);
+    }
+    break;
+  case 'c':
+    if (arg != NULL) {
+      context_cost = atoi(arg);
     }
     break;
   case 'f':

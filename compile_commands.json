@@ -77,10 +77,34 @@
       "-c",
       "-o",
       "main.o",
+      "lib/queue.c"
+    ],
+    "directory": "/home/chris/projects/process-scheduler-simulator",
+    "file": "/home/chris/projects/process-scheduler-simulator/lib/queue.c",
+    "output": "/home/chris/projects/process-scheduler-simulator/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-o",
+      "main.o",
       "simulators/prioritySimulator.c"
     ],
     "directory": "/home/chris/projects/process-scheduler-simulator",
     "file": "/home/chris/projects/process-scheduler-simulator/simulators/prioritySimulator.c",
+    "output": "/home/chris/projects/process-scheduler-simulator/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-o",
+      "main.o",
+      "simulators/roundRobinSimulator.c"
+    ],
+    "directory": "/home/chris/projects/process-scheduler-simulator",
+    "file": "/home/chris/projects/process-scheduler-simulator/simulators/roundRobinSimulator.c",
     "output": "/home/chris/projects/process-scheduler-simulator/main.o"
   }
 ]

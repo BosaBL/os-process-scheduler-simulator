@@ -7,7 +7,7 @@
 #include <time.h>
 #include <unistd.h>
 
-extern int verbose;
+extern int verbose, context_cost;
 
 /*
  * Comparator used for priority, first it compares elements by arrival
@@ -90,6 +90,8 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
   // Simulate while there are processes ready and a process is not already being
   // executed.
   while (pq->heap_size > 0 || rq->heap_size > 0 || executing != NULL) {
+
+    // Check if a process has become ready to be executed.
     if (pq->heap_size > 0 &&
         ((Process *)pqueue_peek(pq))->arrivalTime <= time) {
       pqueue_enqueue(rq, pqueue_dequeue(pq));
@@ -97,32 +99,21 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
 
     // Check if we can execute the smallest arrival time process.
     if (executing == NULL) {
-
       if (rq->heap_size > 0) {
         executing = pqueue_dequeue(rq);
-        // if (verbose == 1) {
-        //   char *details = startDetails(executing);
-        //   printf("\33[2K\r"); // Delete last line.
-        //   printf("EXECUTING %s", details);
-        //   free(details);
-        //   fflush(stdout);
-        // }
       }
+      // If theres a process executing, check if algorithm is in preemptive
+      // mode, if it is, check if the current process in the queue has higher
+      // priority.
     } else if (rq->heap_size > 0 &&
                ((Process *)pqueue_peek(rq))->priority < executing->priority &&
                preemptive == 1) {
 
       pqueue_enqueue(rq, executing);
       executing = pqueue_dequeue(rq);
-
-      // if (verbose == 1) {
-      //   char *details = startDetails(executing);
-      //   printf("EXECUTING %s", details);
-      //   free(details);
-      //   fflush(stdout);
-      // }
     }
 
+    // Set starting metrics for the process.
     if (executing != NULL) {
       executing->startTime =
           executing->startTime < 0 ? time : executing->startTime;
@@ -134,6 +125,7 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
 
     time += 1;
 
+    // Check if process' execution has been completed.
     if (executing != NULL) {
       executing->internalExecutionTime++;
 
@@ -151,6 +143,9 @@ algorithm_eval *priority_scheduling(Process proc[], int proc_qty,
           free(details);
         }
 
+        if (pq->heap_size > 0 || rq->heap_size > 0) {
+          time += context_cost;
+        }
         executing = NULL;
       }
     } else {

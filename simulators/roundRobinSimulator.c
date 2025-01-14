@@ -9,12 +9,11 @@
 #include <time.h>
 #include <unistd.h>
 
-extern int verbose;
+extern int verbose, context_cost;
 
 /*
  * Comparator used to sort the process queque by arrivaTime, essentially,
- making
- * the soonest to execute be the head.
+ * making the soonest to execute process be the head.
  */
 static int arrival_compare(void *a, void *b) {
   Process *p1 = a;
@@ -28,17 +27,20 @@ static int arrival_compare(void *a, void *b) {
     return PQUEUE_LESS;
   }
 
+  if (p1->pid < p2->pid) {
+    return PQUEUE_GREATER;
+  }
+
+  if (p2->pid < p1->pid) {
+    return PQUEUE_LESS;
+  }
+
   return PQUEUE_EQUAL;
 }
 
 /*
- * Simulates the scheduling and execution of processes using non-preemptive
- or
- * preemptive priority scheduling.
- *
- * Lower priority number means higher importance, thus being executed first.
- *
- * @param preemptive 0 for non-preemptive, 1 for preemptive.
+ * Simulates the scheduling and execution of processes using round robing
+ * scheduling algorithm.
  */
 algorithm_eval *round_robin_scheduling(Process proc[], int proc_qty,
                                        int quantum) {
@@ -67,13 +69,17 @@ algorithm_eval *round_robin_scheduling(Process proc[], int proc_qty,
   // Simulate while there are processes ready and a process is not already being
   // executed.
   while (pq->heap_size > 0 || !isEmpty(rq) || executing != NULL) {
+
+    // Check if a process has become ready to be executed.
     if (pq->heap_size > 0 &&
         ((Process *)pqueue_peek(pq))->arrivalTime <= time) {
       qqueue_enqueue(rq, pqueue_dequeue(pq));
     }
 
+    // Check if the current running process has exceeded the quantum time.
     if (executing != NULL && used_quantum >= quantum && !isEmpty(rq)) {
       qqueue_enqueue(rq, executing);
+      time += context_cost;
       executing = NULL;
     }
 
@@ -85,6 +91,7 @@ algorithm_eval *round_robin_scheduling(Process proc[], int proc_qty,
       }
     }
 
+    // Intialize starting metrics for process.
     if (executing != NULL) {
       executing->startTime =
           executing->startTime < 0 ? time : executing->startTime;
@@ -97,6 +104,7 @@ algorithm_eval *round_robin_scheduling(Process proc[], int proc_qty,
     time += 1;
     used_quantum += 1;
 
+    // Check if current process has ended it's execution.
     if (executing != NULL) {
       executing->internalExecutionTime++;
 
@@ -111,6 +119,10 @@ algorithm_eval *round_robin_scheduling(Process proc[], int proc_qty,
           char *details = endDetails(executing);
           printf("EXECUTED  %s\n", details);
           free(details);
+        }
+
+        if (pq->heap_size > 0 || !isEmpty(rq)) {
+          time += context_cost;
         }
 
         executing = NULL;
