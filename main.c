@@ -84,7 +84,6 @@ static struct argp argp = {options, parse_opt, 0, doc};
 
 int main(int argc, char **argv) {
 
-  clearScreen();
   struct arguments arguments;
   arguments.np_scheduling = 0;
   arguments.pp_scheduling = 0;
@@ -95,7 +94,7 @@ int main(int argc, char **argv) {
   arguments.input_file = NULL;
 
   argp_parse(&argp, argc, argv, ARGP_NO_ARGS, 0, &arguments);
-
+  clearScreen();
   if (arguments.process_qty <= 0 && arguments.input_file == NULL) {
     fprintf(stderr, "ERROR: Random process generation (-z) XOR input file "
                     "(-f FILE) needs to be defined.\n");
@@ -157,6 +156,8 @@ int main(int argc, char **argv) {
         "FATAL: There was an error during allocation of process details.\n");
     exit(EXIT_FAILURE);
   }
+
+  clearScreen();
 
   // Initialize table
   ft_table_t *table = ft_create_table();
