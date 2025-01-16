@@ -3,15 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*
- * Clears terminal output in LINUX.
- */
 void clearScreen() { system("reset"); }
 
-/*
- * Parses and validates a string in the form of P<int>(<int>,<int>,<int>,<int>).
- * if the string is valid, the parsed information will be stored into parsedStr
- */
 void parseString(char *str, char *parsedStr) {
   char *format = "P(,,)";
   int f_idx = 0;
@@ -55,10 +48,6 @@ void parseString(char *str, char *parsedStr) {
   parsedStr[content_len] = '\0';
 };
 
-/*
- * Counts the ammount of "real" new lines that a file has.
- * "real" new lines are define as a single consecutive line jump chararcter.
- */
 int countFileLines(char *fileName) {
   FILE *fp;
   char *line = NULL;
@@ -86,9 +75,6 @@ int countFileLines(char *fileName) {
   return count;
 };
 
-/*
- * Reverses a character array in-place.
- */
 void reverse(char s[]) {
   int i, j;
   char c;
@@ -100,10 +86,6 @@ void reverse(char s[]) {
   }
 }
 
-/*
- * Transforms an integer to a character array.
- *
- */
 char *itoa(int n) {
   int i, sign;
   char *s;

@@ -13,8 +13,14 @@ typedef struct algorithm_eval {
   char *alg;
 } algorithm_eval;
 
+/*
+ * Dinamically allocates algortihm_eval struct.
+ */
 algorithm_eval *initAlgorithmData(Process proc[], char *aname);
 
+/*
+ * Prints algorthm data.
+ */
 void printAlgorithmData(algorithm_eval *data);
 
 #endif // !ALGORITHM_EVAL_H

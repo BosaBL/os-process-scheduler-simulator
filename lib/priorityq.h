@@ -13,6 +13,9 @@ typedef struct pqueue_t {
   int heap_size;
 } pqueue;
 
+/*
+ * Inits the queue by dynamically allocating it.
+ */
 pqueue *pqueue_init(int capacity, int min_capacity,
                     int (*comparator)(void *, void *));
 

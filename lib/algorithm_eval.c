@@ -1,9 +1,7 @@
 #include "algorithm_eval.h"
 #include <stdio.h>
 #include <stdlib.h>
-/*
- * Dinamically allocates algortihm_eval struct.
- */
+
 algorithm_eval *initAlgorithmData(Process proc[], char *aname) {
 
   algorithm_eval *algorithm_data = malloc(sizeof(algorithm_eval));
@@ -21,9 +19,6 @@ algorithm_eval *initAlgorithmData(Process proc[], char *aname) {
   return algorithm_data;
 }
 
-/*
- * Prints algorthm data.
- */
 void printAlgorithmData(algorithm_eval *data) {
   printf("\n\nAlgortihm Metric: %s\n", data->alg);
   printf("%s (startTime:%d,totalTime:%d,ideTime:%d,avgResponseTime:%f,"

@@ -25,7 +25,8 @@ void initProcess(Process *p, int pid, int priority, int CPUBurst,
 
 /*
  * Initializes a process with the required starting data.
- * @param priority will only be used on priority based simulations. */
+ * @param priority will only be used on priority based simulations.
+ */
 void initRandomProcess(Process *p, int pid, minMaxRange priority,
                        minMaxRange CPUBurst, minMaxRange arrivalTime) {
 
